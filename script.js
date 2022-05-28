@@ -11,46 +11,46 @@ let api;
 
 inputField.addEventListener("keyup", e =>{
     if(e.key == "Enter" && inputField.value != ""){
-        requestApi(inputField.value);
+        hentApi(inputField.value);
     }
 });
 
 locationBtn.addEventListener("click", () =>{
     if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+        navigator.geolocation.getCurrentPosition(Vedlykket, onFeil);
     }else{
         alert("Din browser støtter ikke lokasjon funksjonen");
     }
 });
 
-function requestApi(city){
+function hentApi(city){
     api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=f0b49b798401f8dc2c946af9e9e0e8b4
 `;
-    fetchData();
+    HentData();
 }
 
-function onSuccess(position){
+function Vedlykket(position){
     const {latitude, longitude} = position.coords;
     api = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=f0b49b798401f8dc2c946af9e9e0e8b4
 `;
-    fetchData();
+    HentData();
 }
 
-function onError(error){
+function onFeil(error){
     infoTxt.innerText = error.message;
     infoTxt.classList.add("error");
 }
 
-function fetchData(){
+function HentData(){
     infoTxt.innerText = "Finner informasjon om værtilstand ...";
     infoTxt.classList.add("venter");
-    fetch(api).then(res => res.json()).then(result => weatherDetails(result)).catch(() =>{
+    fetch(api).then(res => res.json()).then(result => VerDetaljer(result)).catch(() =>{
         infoTxt.innerText = "Noe gikk galt !";
         infoTxt.classList.replace("jobber", "error");
     });
 }
 
-function weatherDetails(info){
+function VerDetaljer(info){
     if(info.cod == "404"){
         infoTxt.classList.replace("jobber", "error");
         infoTxt.innerText = `${inputField.value} er ikke en by`;
